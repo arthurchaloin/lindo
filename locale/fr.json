@@ -212,6 +212,10 @@
         },
         "jobsxp": {
           "text": " XP manquant<br>avant le niveau "
+        },
+        "monstertooltip": {
+          "level": "Rang",
+          "group": "Groupe"
         }
       },
       "general": {

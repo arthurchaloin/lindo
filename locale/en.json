@@ -213,6 +213,10 @@
         },
         "jobsxp": {
           "text": " XP missing<br>before level "
+        },
+        "monstertooltip": {
+          "level": "Level",
+          "group": "Group"
         }
       },
       "general": {
