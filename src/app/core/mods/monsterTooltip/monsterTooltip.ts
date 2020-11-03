@@ -110,7 +110,6 @@ export class MonsterTooltip extends Mod {
     }
 
     private injectTooltip(data: TooltipData): HTMLElement {
-        console.log(data);
         const target = this.wGame.document.getElementsByClassName("foreground")[0];
         const levelLabel = this.translate.instant("app.option.vip.monstertooltip.level");
         const groupLabel = this.translate.instant("app.option.vip.monstertooltip.group");
@@ -173,13 +172,11 @@ export class MonsterTooltip extends Mod {
         let partyXp = -1;
         if (Object.keys(partyData._partyFromId).length > 0) {
             const party = partyData._partyFromId[Object.keys(partyData._partyFromId)[0]];
-            console.log(party)
             const partyLevels = [characterBaseInformations.level, ...Object.keys(party._members).map(id => party._members[id].level)];
             const partyLevel = partyLevels.reduce((total, level) => total + level);
             const highestPartyLevel = partyLevels.slice().sort((a, b) => a < b ? -1 : 1).pop();
             const partySizeExcludingLowLevels = partyLevels.filter(level => level >= highestPartyLevel / 3).length;
             const partySizeModifier = MonsterTooltip.partySizeModifier[partySizeExcludingLowLevels];
-            console.log(partyLevels, highestPartyLevel, partySizeExcludingLowLevels, partySizeModifier);
             partyXp = this.calculateXp(
                 monstersXp,
                 characterBaseInformations.level,
@@ -231,7 +228,6 @@ export class MonsterTooltip extends Mod {
         const bonusModifier = 1 + this.wGame.gui.playerData.experienceFactor / 100;
         const contributionModifier = playerLevel / partyLevel;
 
-        console.log(monstersXp, modifier, ageModifier, contributionModifier, partySizeModifier, wisdomModifier, bonusModifier)
         return Math.floor(
             bonusModifier * Math.floor(
                 partySizeModifier * Math.round(
@@ -282,77 +278,4 @@ export class MonsterTooltip extends Mod {
         8: 4.7,
     }
 
-}
-
-function xp(e, t) {
-    function i(e, t) {
-        t = t || 0;
-        var i = Math.pow(10, t),
-            n = e * i;
-        //@ts-ignore
-        return parseInt(n, 10) / i
-    }
-
-    function n(e) {
-        return e <= 0 ? 1 : 1 + e / 100
-    }
-
-    function o(e, t) {
-        var i = 1;
-        return "number" != typeof e || "number" != typeof t ? (console.error("xpFormula: one of getGroupXPCoeff's params is not a number", {
-            totalPlayerLevels: e,
-            totalMobLevels: t
-        }), i) : (e - a > t ? i = t / e : e + 2 * a < t && (i = (e + 2 * a) / t), i)
-    }
-
-    function s(e) {
-        return r[Math.max(0, Math.min(r.length, e) - 1)]
-    }
-    var a = 5,
-        r = [1, 1.1, 1.5, 2.3, 3.1, 3.6, 4.2, 4.7];
-    e.exports = function(e, t, a, r) {
-        e = e || {}, r = r || 0, a = a || [e], Array.isArray(a) || (a = [e]);
-        var l = 0;
-        if ("number" != typeof e.level || "number" != typeof e.wisdom || "number" != typeof e.xpRatioMount || "number" != typeof e.experienceFactor || "number" != typeof e.xpGuildGivenPercent || "number" != typeof e.xpAlliancePrismBonusPercent) return console.error("xpFormula: there are params in playerData that are not a number", {
-            level: e.level,
-            wisdom: e.wisdom,
-            experienceFactor: e.experienceFactor,
-            xpRatioMount: e.xpRatioMount,
-            xpGuildGivenPercent: e.xpGuildGivenPercent,
-            xpAlliancePrismBonusPercent: e.xpAlliancePrismBonusPercent
-        }), 0;
-        var c = 0,
-            u = 0,
-            d = 0;
-        a.forEach(function(e) {
-            c += e.level, e.level > u && (u = e.level)
-        });
-        var h = Math.floor(u / 3);
-        a.forEach(function(e) {
-            e.level >= h && (d += 1)
-        });
-        var p = 0,
-            m = 0,
-            f = 0;
-        Array.isArray(t) && t.forEach(function(e) {
-            return "number" != typeof e.xp || "number" != typeof e.level ? void console.error("xpFormula: mob xp or level is not a number for mob: " + e.id, {
-                xp: e.xp,
-                level: e.level
-            //@ts-ignore
-            }) : (m += e.level, e.level > p && (p = e.level), void(f += i(e.xp)))
-        });
-        var g = o(c, m),
-            _ = s(d);
-        //@ts-ignore
-        if (f = i(f * g), f = i(f * _), f = i(f * n(r)), f <= 0) return 0;
-        //@ts-ignore
-        var v = i(2.5 * p),
-            y = Math.min(e.level, v);
-        //@ts-ignore
-        l = i(f * y / c), l = i(l * e.wisdom / 100 + l), l = Math.max(1, l);
-        var b = 1 + e.experienceFactor / 100,
-            w = 100;
-        //@ts-ignore
-        return w -= w * e.xpRatioMount / 100, w -= w * e.xpGuildGivenPercent / 100, w /= 100, e.xpAlliancePrismBonusPercent > 0 && (l *= 1 + e.xpAlliancePrismBonusPercent / 100), l = i(l * w) * b, i(l)
-    }
 }
